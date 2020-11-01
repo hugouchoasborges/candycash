@@ -23,6 +23,7 @@ namespace util.google
         public void Load(Action<SheetEntry[]> callback = null)
         {
             _afterProcessDataCallback = callback;
+            _entries = new List<SheetEntry>();
             StartCoroutine(CSVDownloader.DownloadData(AfterDownload));
         }
 
@@ -175,11 +176,21 @@ namespace util.google
 
         private void CreateSheetEntry(List<string> currLine)
         {
-            _entries.Add(new SheetEntry()
+            try
             {
-                timeStamp = currLine[0],
-                name = currLine[1],
-            });
+                _entries.Add(new SheetEntry()
+                {
+                    timeStamp = currLine[0],
+                    name = currLine[1],
+                    score = int.Parse(currLine[2]),
+                    coins = int.Parse(currLine[3]),
+                    password = currLine[4]
+                });
+            }
+            catch (FormatException e)
+            {
+                GameDebug.LogError(e.Message, LogType.Web);
+            }
         }
 
         private bool IsAndroid()

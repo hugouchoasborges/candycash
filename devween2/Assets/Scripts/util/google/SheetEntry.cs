@@ -8,5 +8,8 @@ namespace google
     {
         public string timeStamp;
         public string name;
+        public int score;
+        public int coins;
+        public string password;
     }
 }

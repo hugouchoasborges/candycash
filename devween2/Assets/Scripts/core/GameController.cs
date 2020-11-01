@@ -9,7 +9,7 @@ using util.google;
 
 namespace core
 {
-    public class GameController : MonoBehaviour
+    public class GameController : Singleton<GameController>
     {
         [Header("Network")]
         [SerializeField] private Loader mGoogleLoader;
@@ -24,14 +24,20 @@ namespace core
         /// </summary>
         private void Start()
         {
+            LoadFromGoogle();
+        }
+
+        public void LoadFromGoogle()
+        {
             // Load form from Google Drive
             mGoogleLoader.Load((entries) =>
             {
+                mLeaderboardPoolController.DestroyAll();
                 foreach (var entry in entries)
                 {
                     // Instantiate leaderboard items
                     LeaderboardItem leaderboardItem = mLeaderboardPoolController.Spawn();
-                    leaderboardItem.name = entry.name;
+                    leaderboardItem.UpdateInfo(entry.name, entry.password, entry.coins, entry.score);
                 }
             });
         }

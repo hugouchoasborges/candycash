@@ -3,7 +3,10 @@
  * Edited by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+using core;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -14,14 +17,14 @@ namespace util.google
     {
         [Header("GForm data")]
         [Space]
-        [SerializeField] private string kGFormBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSfRTCs6_jGFeu7Uiq4Oj318bybaygR-CwzEH19plbaH1dW2Fg/";
-        [SerializeField] private string kGFormEntryID = "entry.1916679377";
+        [SerializeField] private string kGFormBaseURL = "";
 
         [Header("Test components")]
         [SerializeField] private bool _testMode;
         [SerializeField] private GameObject _testPanel;
-        [SerializeField] private InputField _nameInput;
         [SerializeField] private Button _sendButton;
+        [SerializeField] private Button _updateButton;
+        [SerializeField] private FormInput[] _formInputs;
 
         private void Awake()
         {
@@ -29,7 +32,8 @@ namespace util.google
             if (_testMode)
             {
                 _testPanel.SetActive(true);
-                _sendButton.onClick.AddListener(delegate { Send(_nameInput.text); });
+                _sendButton.onClick.AddListener(delegate { SendTestMode(); });
+                _updateButton.onClick.AddListener(delegate { UpdateTestMode(); });
             }
             else
                 _testPanel.SetActive(false);
@@ -38,27 +42,69 @@ namespace util.google
 #endif
         }
 
-        private IEnumerator Post<T>(T dataContainer)
+        private void SendTestMode()
         {
-            bool isString = dataContainer is string;
-            string jsonData = isString ? dataContainer.ToString() : JsonUtility.ToJson(dataContainer);
+            List<FormEntry> formEntries = new List<FormEntry>();
+
+            foreach (var input in _formInputs)
+            {
+                formEntries.Add(new FormEntry()
+                {
+                    formEntryId = input.entry.formEntryId,
+                    entryStr = input.input.text
+                });
+            }
+
+            // Send the new Score then load all data from GoogleDocs again
+            Send(null, formEntries.ToArray());
+        }
+
+        private void UpdateTestMode()
+        {
+            GameController.Instance.LoadFromGoogle();
+        }
+
+        private IEnumerator Post(Action callback = null, params FormEntry[] entries)
+        {
+            string allData = "";
 
             WWWForm form = new WWWForm();
-            form.AddField(kGFormEntryID, jsonData);
+            foreach (var entry in entries)
+            {
+                allData += entry.entryStr + ", ";
+                form.AddField(entry.formEntryId, entry.entryStr);
+            }
+
             string urlGFormResponse = kGFormBaseURL + "formResponse";
             using (UnityWebRequest www = UnityWebRequest.Post(urlGFormResponse, form))
             {
                 yield return www.SendWebRequest();
                 GameDebug.Log(www.isNetworkError
                     ? www.error
-                    : $"Form upload complete!\nMessage: {jsonData}",
+                    : $"Form upload complete!\nMessage: {allData}",
                     LogType.Web);
+
+                callback?.Invoke();
             }
         }
 
-        public void Send<T>(T dataContainer)
+        public void Send(Action callback = null, params FormEntry[] entries)
         {
-            StartCoroutine(Post(dataContainer));
+            StartCoroutine(Post(callback, entries));
         }
+    }
+
+    [System.Serializable]
+    public struct FormEntry
+    {
+        public string formEntryId;
+        [HideInInspector] public string entryStr;
+    }
+
+    [System.Serializable]
+    public struct FormInput
+    {
+        public InputField input;
+        public FormEntry entry;
     }
 }

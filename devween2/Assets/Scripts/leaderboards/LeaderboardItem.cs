@@ -11,11 +11,8 @@ namespace leaderboard
     {
         [Header("Components")]
         [SerializeField] private Text _nameText;
-        public new string name
-        {
-            get => _nameText.text;
-            set => _nameText.text = value;
-        }
+        [SerializeField] private Text _coinsText;
+        [SerializeField] private Text _scoreText;
 
         [Header("Player Info")]
         [Space]
@@ -24,6 +21,16 @@ namespace leaderboard
         [SerializeField] private int coins;
         [SerializeField] private int maxScore;
 
+        public void UpdateInfo(string username, string userpass, int coins, int maxScore)
+        {
+            this.username = username;
+            this.userpass = userpass;
+            this.coins = coins;
+            this.maxScore = maxScore;
 
+            _nameText.text = username;
+            _coinsText.text = coins.ToString();
+            _scoreText.text = maxScore.ToString();
+        }
     }
 }
