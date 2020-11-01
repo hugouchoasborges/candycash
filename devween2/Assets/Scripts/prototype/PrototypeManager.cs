@@ -14,7 +14,7 @@ namespace prototype
 
         public void LoadPrototype(int index)
         {
-            GameDebug.Log($"Loading Prototype {index}...");
+            GameDebug.Log($"Loading Prototype {index}...", util.LogType.Transition);
             _mainCanvas.enabled = false;
             SceneManager.LoadSceneAsync($"Prototype {index}", LoadSceneMode.Additive);
         }

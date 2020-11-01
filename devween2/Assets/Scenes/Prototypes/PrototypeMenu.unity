@@ -874,6 +874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemLogEnabled: 1
+  logTypesEnabled: 0000000001000000
 --- !u!4 &1782752104
 Transform:
   m_ObjectHideFlags: 0
