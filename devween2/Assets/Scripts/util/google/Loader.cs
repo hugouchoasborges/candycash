@@ -3,6 +3,8 @@
  * Edited by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+using google;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,19 +13,16 @@ namespace util.google
 {
     public class Loader : MonoBehaviour
     {
+        private int _progress = 0;
+        private List<string> _headers = new List<string>();
 
-        private int progress = 0;
-        private List<string> headers = new List<string>();
+        private List<SheetEntry> _entries = new List<SheetEntry>();
 
+        private Action<SheetEntry[]> _afterProcessDataCallback;
 
-        // TODO: Remove Awake and call Load() from game flow
-        private void Awake()
+        public void Load(Action<SheetEntry[]> callback = null)
         {
-            Load();
-        }
-
-        public void Load()
-        {
+            _afterProcessDataCallback = callback;
             StartCoroutine(CSVDownloader.DownloadData(AfterDownload));
         }
 
@@ -50,7 +49,7 @@ namespace util.google
             }
             else
             {
-
+                _afterProcessDataCallback?.Invoke(_entries.ToArray());
             }
         }
 
@@ -143,7 +142,7 @@ namespace util.google
                     currCharIndex++;
                 }
 
-                progress = (int)((float)currCharIndex / data.Length * 100.0f);
+                _progress = (int)((float)currCharIndex / data.Length * 100.0f);
             }
 
             onCompleted(null);
@@ -155,29 +154,32 @@ namespace util.google
             // This line contains the column headers
             if (currLineIndex == 0)
             {
-                headers = new List<string>();
+                _headers = new List<string>();
                 for (int columnIndex = 0; columnIndex < currLineElements.Count; columnIndex++)
                 {
                     string currHeader = currLineElements[columnIndex];
-                    headers.Add(currHeader);
+                    _headers.Add(currHeader);
                 }
-                UnityEngine.Assertions.Assert.IsFalse(headers.Count == 0);
+                UnityEngine.Assertions.Assert.IsFalse(_headers.Count == 0);
             }
             // This is a normal node
             else if (currLineElements.Count > 1)
             {
-                string lineMessage = "";
-                for (int columnIndex = 0; columnIndex < currLineElements.Count; columnIndex++)
-                {
-                    lineMessage += $"{currLineElements[columnIndex]}, ";
-                }
-
-                // TODO: Create Leaderboards entry
+                CreateSheetEntry(currLineElements);
             }
             else
             {
                 GameDebug.LogError("Database line did not fall into one of the expected categories.", LogType.Web);
             }
+        }
+
+        private void CreateSheetEntry(List<string> currLine)
+        {
+            _entries.Add(new SheetEntry()
+            {
+                timeStamp = currLine[0],
+                name = currLine[1],
+            });
         }
 
         private bool IsAndroid()
