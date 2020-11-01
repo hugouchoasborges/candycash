@@ -2,6 +2,7 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,14 +16,24 @@ namespace util
 
         [SerializeField] private bool systemLogEnabled = true;
 
-        public static void Log(string message, LogType logType = LogType.None)
+        private static void InternalLog(string message, Action<string> logCallback, LogType logType = LogType.None)
         {
             if (!LogTypeEnabled(logType)) return;
 
             if (logType != LogType.None)
                 message = $"[{logType.ToString().ToUpper()}] " + message;
 
-            Debug.Log(message);
+            logCallback.Invoke(message);
+        }
+
+        public static void Log(string message, LogType logType = LogType.None)
+        {
+            InternalLog(message, Debug.Log, logType);
+        }
+
+        public static void LogError(string message, LogType logType = LogType.None)
+        {
+            InternalLog(message, Debug.LogError, logType);
         }
 
 
@@ -30,6 +41,7 @@ namespace util
         // ========================== Logging Checkers ============================
         // ----------------------------------------------------------------------------------
 
+        [Space]
         [SerializeField] private List<LogType> logTypesEnabled;
 
         private void Awake()

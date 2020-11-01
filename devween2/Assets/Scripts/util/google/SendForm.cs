@@ -8,9 +8,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace util
+namespace util.google
 {
-    public class GoogleCommunication : Singleton<GoogleCommunication>
+    public class SendForm : Singleton<SendForm>
     {
         [Header("Buttons")]
         [SerializeField] private InputField _nameInput;
