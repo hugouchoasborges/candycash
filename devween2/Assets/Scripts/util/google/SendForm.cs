@@ -3,6 +3,8 @@
  * Edited by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+#define DEVELOPER
+
 using core;
 using System;
 using System.Collections;
@@ -28,7 +30,7 @@ namespace util.google
 
         private void Awake()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPER
             if (_testMode)
             {
                 _testPanel.SetActive(true);

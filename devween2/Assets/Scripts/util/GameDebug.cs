@@ -2,9 +2,12 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+#define DEVELOPER
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace util
 {
@@ -16,6 +19,9 @@ namespace util
 
         [SerializeField] private bool systemLogEnabled = true;
 
+        [SerializeField] private GameObject _logHistoryPanel;
+        [SerializeField] private Text _logHistory;
+
         private static void InternalLog(string message, Action<string> logCallback, LogType logType = LogType.None)
         {
             if (!LogTypeEnabled(logType)) return;
@@ -24,6 +30,9 @@ namespace util
                 message = $"[{logType.ToString().ToUpper()}] " + message;
 
             logCallback.Invoke(message);
+
+            if (Instance._logHistoryPanel.activeInHierarchy)
+                Instance._logHistory.text += "\n>> " + message;
         }
 
         public static void Log(string message, LogType logType = LogType.None)
@@ -58,9 +67,13 @@ namespace util
 
         private void updateLogConf()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPER
             Debug.unityLogger.logEnabled = systemLogEnabled;
+#elif UNITY_WEBGL && DEVELOPER
+            Debug.unityLogger.logEnabled = systemLogEnabled;
+            Instance._logHistoryPanel.SetActive(true);
 #else
+            Instance._logHistoryPanel.SetActive(false);
             Debug.unityLogger.logEnabled = false;
 #endif
         }
