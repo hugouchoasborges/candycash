@@ -171,7 +171,6 @@ namespace util.google
                 {
                     lineMessage += $"{currLineElements[columnIndex]}, ";
                 }
-                GameDebug.Log($"Line {currLineIndex}: {lineMessage}", LogType.Web);
 
                 // TODO: Create Leaderboards entry
             }

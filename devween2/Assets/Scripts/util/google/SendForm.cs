@@ -12,18 +12,30 @@ namespace util.google
 {
     public class SendForm : Singleton<SendForm>
     {
-        [Header("Buttons")]
-        [SerializeField] private InputField _nameInput;
-        [SerializeField] private Button _sendButton;
-
         [Header("GForm data")]
         [Space]
         [SerializeField] private string kGFormBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSfRTCs6_jGFeu7Uiq4Oj318bybaygR-CwzEH19plbaH1dW2Fg/";
         [SerializeField] private string kGFormEntryID = "entry.1916679377";
 
+        [Header("Test components")]
+        [SerializeField] private bool _testMode;
+        [SerializeField] private GameObject _testPanel;
+        [SerializeField] private InputField _nameInput;
+        [SerializeField] private Button _sendButton;
+
         private void Awake()
         {
-            _sendButton.onClick.AddListener(delegate { Send(); });
+#if UNITY_EDITOR
+            if (_testMode)
+            {
+                _testPanel.SetActive(true);
+                _sendButton.onClick.AddListener(delegate { Send(_nameInput.text); });
+            }
+            else
+                _testPanel.SetActive(false);
+#else
+            _testPanel.SetActive(false);
+#endif
         }
 
         private IEnumerator Post<T>(T dataContainer)
@@ -44,9 +56,9 @@ namespace util.google
             }
         }
 
-        public void Send()
+        public void Send<T>(T dataContainer)
         {
-            StartCoroutine(Post(_nameInput.text));
+            StartCoroutine(Post(dataContainer));
         }
     }
 }
