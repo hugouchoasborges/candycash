@@ -1,5 +1,5 @@
 ﻿/*
- * Create by Hugo Uchoas Borges <hugouchoas@outlook.com>
+ * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
 using UnityEngine;

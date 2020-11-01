@@ -1,8 +1,7 @@
 ﻿/*
- * Create by Hugo Uchoas Borges <hugouchoas@outlook.com>
+ * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,6 +63,7 @@ namespace util
     public enum LogType
     {
         None,
-        Transition
+        Transition,
+        Web
     }
 }
