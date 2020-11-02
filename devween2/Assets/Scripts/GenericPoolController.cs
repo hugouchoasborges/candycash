@@ -35,6 +35,7 @@ public class GenericPoolController<T> : MonoBehaviour where T : MonoBehaviour
         var pooledItem = queue.Count > 0 ? queue.Dequeue() : Instantiate(prefab) as GameObject;
         pooledItem.transform.SetParent(transform);
         pooledItem.SetActive(true);
+        pooledItem.transform.SetAsFirstSibling();
 
         T poolItemController = pooledItem.GetComponent<T>();
         activeObjects.Add(poolItemController);

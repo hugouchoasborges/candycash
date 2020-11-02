@@ -6,6 +6,8 @@ using monster;
 using leaderboard;
 using UnityEngine;
 using util.google;
+using System;
+using google;
 
 namespace core
 {
@@ -33,6 +35,20 @@ namespace core
             mGoogleLoader.Load((entries) =>
             {
                 mLeaderboardPoolController.DestroyAll();
+                Array.Sort<SheetEntry>(entries,
+                    (x, y) =>
+                    {
+                        var score = x.score.CompareTo(y.score);
+                        if (score == 0)
+                        {
+                            var coins = x.coins.CompareTo(y.coins);
+                            if (coins == 0)
+                                return x.name.CompareTo(y.name);
+                            return coins;
+                        }
+                        return score;
+                    });
+                // TODO: Remove duplicated entries (keep newer ones)
                 foreach (var entry in entries)
                 {
                     // Instantiate leaderboard items
