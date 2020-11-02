@@ -85,7 +85,6 @@ namespace util.google
                 else
                 {
                     // Return true if the entry is new
-                    // TODO: Character limit
                     if (string.IsNullOrEmpty(entry.entryStr))
                     {
                         GameDebug.LogError("Primary Key not filled", LogType.Web);

@@ -43,8 +43,6 @@ namespace util.google
             if (null == data)
             {
                 GameDebug.LogError("Was not able to download data or retrieve stale data.", LogType.Web);
-                // TODO: Display a notification that this is likely due to poor internet connectivity
-                //       Maybe ask them about if they want to report a bug over this, though if there's no internet I guess they can't
             }
             else
             {
@@ -57,7 +55,6 @@ namespace util.google
             if (null != errorMessage)
             {
                 GameDebug.LogError("Was not able to process data: " + errorMessage, LogType.Web);
-                // TODO: 
             }
             else
             {

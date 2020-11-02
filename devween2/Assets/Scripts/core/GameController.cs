@@ -58,10 +58,6 @@ namespace core
 
         private void SetTouchActive(bool active)
         {
-            //mDoorClickable.onPointerDown.RemoveAllListeners();
-            //mInfoFrameClickable.onPointerDown.RemoveAllListeners();
-            //mRankingClickable.onPointerDown.RemoveAllListeners();
-
             mDoorClickable.touchable = active;
             mInfoFrameClickable.touchable = active;
             mRankingClickable.touchable = active;
