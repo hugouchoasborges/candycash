@@ -666,7 +666,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterLimit: 8
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1481,14 +1481,14 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 630638761}
   m_TextComponent: {fileID: 217800065}
   m_Placeholder: {fileID: 1694730640}
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterLimit: 8
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -3629,14 +3629,14 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1809470450}
   m_TextComponent: {fileID: 579029028}
   m_Placeholder: {fileID: 1985062427}
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterValidation: 1
+  m_CharacterLimit: 6
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -4002,14 +4002,14 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1921516237}
   m_TextComponent: {fileID: 25866365}
   m_Placeholder: {fileID: 324856758}
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterValidation: 1
+  m_CharacterLimit: 6
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -4221,6 +4221,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kGFormBaseURL: https://docs.google.com/forms/d/e/1FAIpQLSfRTCs6_jGFeu7Uiq4Oj318bybaygR-CwzEH19plbaH1dW2Fg/
+  kPrimaryKey: entry.1916679377
+  kPasswordKey: entry.1848534055
   _testMode: 1
   _testPanel: {fileID: 1870369051}
   _sendButton: {fileID: 1159012221}

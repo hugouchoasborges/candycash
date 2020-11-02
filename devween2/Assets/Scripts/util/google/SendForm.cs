@@ -6,6 +6,7 @@
 //#define DEVELOPER
 
 using core;
+using google;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace util.google
         [Header("GForm data")]
         [Space]
         [SerializeField] private string kGFormBaseURL = "";
+        [SerializeField] private string kPrimaryKey = "";
+        [SerializeField] private string kPasswordKey = "";
 
         [Header("Test components")]
         [SerializeField] private bool _testMode;
@@ -58,7 +61,7 @@ namespace util.google
             }
 
             // Send the new Score then load all data from GoogleDocs again
-            Send(null, formEntries.ToArray());
+            Send(UpdateTestMode, formEntries.ToArray());
         }
 
         private void UpdateTestMode()
@@ -66,9 +69,65 @@ namespace util.google
             GameController.Instance.LoadFromGoogle();
         }
 
+        private bool CheckValidEntry(params FormEntry[] entries)
+        {
+            SheetEntry? currEntry = null;
+
+            foreach (var entry in entries)
+            {
+                if (entry.formEntryId != kPrimaryKey)
+                    continue;
+
+                // Check if the entry already exists
+                currEntry = GameController.Instance.GetEntryByName(entry.entryStr);
+                if (currEntry.HasValue)
+                    break;
+                else
+                {
+                    // Return true if the entry is new
+                    // TODO: Character limit
+                    if (string.IsNullOrEmpty(entry.entryStr))
+                    {
+                        GameDebug.LogError("Primary Key not filled", LogType.Web);
+                        return false;
+                    }
+                    return true;
+                }
+            }
+
+            // Check For Password
+            if (currEntry.HasValue)
+            {
+                foreach (var entry in entries)
+                {
+                    if (entry.formEntryId == kPasswordKey)
+                    {
+                        if (entry.entryStr == currEntry.Value.password)
+                            return true;
+
+                        if (string.IsNullOrEmpty(entry.entryStr))
+                            GameDebug.LogError("Password not filled", LogType.Web);
+                        else
+                            GameDebug.LogError("Wrong Password", LogType.Web);
+                        return false;
+                    }
+                }
+
+                GameDebug.LogError("Password not filled", LogType.Web);
+                return false;
+            }
+
+            // PrimaryKey not found
+            GameDebug.LogError("Primary Key not filled", LogType.Web);
+            return false;
+        }
+
         private IEnumerator Post(Action callback = null, params FormEntry[] entries)
         {
             string allData = "";
+
+            if (!CheckValidEntry(entries))
+                yield break;
 
             WWWForm form = new WWWForm();
             foreach (var entry in entries)
@@ -90,9 +149,15 @@ namespace util.google
             }
         }
 
+        private IEnumerator DelayCallback(Action callback)
+        {
+            yield return new WaitForSeconds(1f);
+            callback.Invoke();
+        }
+
         public void Send(Action callback = null, params FormEntry[] entries)
         {
-            StartCoroutine(Post(callback, entries));
+            StartCoroutine(Post(() => StartCoroutine(DelayCallback(callback)), entries));
         }
     }
 

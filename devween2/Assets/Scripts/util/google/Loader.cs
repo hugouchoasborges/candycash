@@ -7,6 +7,7 @@ using google;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace util.google
@@ -19,6 +20,16 @@ namespace util.google
         private List<SheetEntry> _entries = new List<SheetEntry>();
 
         private Action<SheetEntry[]> _afterProcessDataCallback;
+
+        public SheetEntry? GetEntryByName(string name)
+        {
+            foreach (var entry in _entries.ToArray().Reverse())
+            {
+                if (entry.name == name)
+                    return entry;
+            }
+            return null;
+        }
 
         public void Load(Action<SheetEntry[]> callback = null)
         {

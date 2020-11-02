@@ -31,6 +31,11 @@ namespace core
             LoadFromGoogle();
         }
 
+        public SheetEntry? GetEntryByName(string name)
+        {
+            return mGoogleLoader.GetEntryByName(name);
+        }
+
         public void LoadFromGoogle()
         {
             // Load form from Google Drive
