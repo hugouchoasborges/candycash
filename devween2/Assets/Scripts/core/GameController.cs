@@ -8,6 +8,8 @@ using UnityEngine;
 using util.google;
 using System;
 using google;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace core
 {
@@ -35,7 +37,18 @@ namespace core
             mGoogleLoader.Load((entries) =>
             {
                 mLeaderboardPoolController.DestroyAll();
-                Array.Sort<SheetEntry>(entries,
+
+                // Remove duplicated entries (keep newer one)
+                List<SheetEntry> singleEntriesList = new List<SheetEntry>();
+                foreach (var entry in entries.Reverse())
+                {
+                    if (singleEntriesList.Where(e => e.name == entry.name).ToArray().Length == 0)
+                        singleEntriesList.Add(entry);
+                }
+                SheetEntry[] singleEntries = singleEntriesList.ToArray();
+
+                // Sort
+                Array.Sort<SheetEntry>(singleEntries,
                     (x, y) =>
                     {
                         var score = x.score.CompareTo(y.score);
@@ -48,8 +61,7 @@ namespace core
                         }
                         return score;
                     });
-                // TODO: Remove duplicated entries (keep newer ones)
-                foreach (var entry in entries)
+                foreach (var entry in singleEntries)
                 {
                     // Instantiate leaderboard items
                     LeaderboardItem leaderboardItem = mLeaderboardPoolController.Spawn();
