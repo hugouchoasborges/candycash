@@ -11,6 +11,7 @@ namespace util.google
     public static class CSVDownloader
     {
         private const string k_googleSheetDocID = "1CvhFP6J1Hn44uIWvt4ikkUKn4HH3KxB1iLEwst0Bnvk";
+        private const string cors_anywhere = "https://cors-anywhere.herokuapp.com/";
         private const string url = "https://docs.google.com/spreadsheets/d/" + k_googleSheetDocID + "/export?format=csv";
 
         internal static IEnumerator DownloadData(System.Action<string> onCompleted)
@@ -18,8 +19,15 @@ namespace util.google
             yield return new WaitForEndOfFrame();
 
             string downloadData = null;
-            using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+
+            string _url = url;
+            if (IsWebGL())
+                _url = cors_anywhere + _url;
+
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(_url))
             {
+                if (IsWebGL())
+                    webRequest.SetRequestHeader("X-Requested-With", "XMLHttpRequest");
 
                 yield return webRequest.SendWebRequest();
 
@@ -52,6 +60,14 @@ namespace util.google
             }
 
             onCompleted(downloadData);
+        }
+
+        private static bool IsWebGL()
+        {
+#if UNITY_EDITOR || UNITY_WINDOWS
+            return false;
+#endif
+            return true;
         }
     }
 }

@@ -2,7 +2,7 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
-#define DEVELOPER
+//#define DEVELOPER
 
 using System;
 using System.Collections.Generic;

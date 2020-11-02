@@ -3,7 +3,7 @@
  * Edited by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
-#define DEVELOPER
+//#define DEVELOPER
 
 using core;
 using System;
