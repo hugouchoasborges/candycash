@@ -727,6 +727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 313534976}
   - component: {fileID: 313534978}
+  - component: {fileID: 313534979}
   - component: {fileID: 313534977}
   m_Layer: 5
   m_Name: DoorPanel
@@ -749,10 +750,10 @@ RectTransform:
   m_Father: {fileID: 1912172195}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -76.2}
-  m_SizeDelta: {x: 226.08667, y: -152.39868}
+  m_SizeDelta: {x: -733.9133, y: -152.39868}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &313534977
 MonoBehaviour:
@@ -792,6 +793,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313534975}
   m_CullTransparentMesh: 0
+--- !u!114 &313534979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313534975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c23162df733b7744bf6c3aa3ea156e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &324856756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,6 +1257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mGoogleLoader: {fileID: 1428756560}
+  mDoorClickable: {fileID: 313534979}
   mMonsterPoolController: {fileID: 0}
   mLeaderboardPoolController: {fileID: 92394806}
 --- !u!1 &579029026
@@ -2552,7 +2569,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.6000061, y: 59.33}
+  m_AnchoredPosition: {x: 1.5999756, y: 59.329987}
   m_SizeDelta: {x: 63.341797, y: 118.66785}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1316842081
@@ -4371,7 +4388,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -366, y: 28.6}
+  m_AnchoredPosition: {x: -365.99994, y: 28.599976}
   m_SizeDelta: {x: -775.823, y: -310.54095}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2018311851

@@ -10,6 +10,7 @@ using System;
 using google;
 using System.Collections.Generic;
 using System.Linq;
+using util;
 
 namespace core
 {
@@ -17,6 +18,10 @@ namespace core
     {
         [Header("Network")]
         [SerializeField] private Loader mGoogleLoader;
+
+        [Header("Menu Items")]
+        [Space]
+        [SerializeField] private ClickableComponent mDoorClickable;
 
         [Header("Game Controllers")]
         [Space]
@@ -28,15 +33,35 @@ namespace core
         /// </summary>
         private void Start()
         {
-            LoadFromGoogle();
+            LoadFromGoogle(() =>
+            {
+                mDoorClickable.onPointerDown.AddListener(Play);
+            });
         }
+
+        private void Play()
+        {
+            GameDebug.Log("Starting Game...", util.LogType.Transition);
+
+            // TODO: Remove all click Listeners
+            mDoorClickable.onPointerDown.RemoveAllListeners();
+
+            // TODO: Remove LeaderBoards + GameInfo
+            // TODO: Zoom in the Door
+        }
+
+
+        // ----------------------------------------------------------------------------------
+        // ========================== Server Communication ============================
+        // ----------------------------------------------------------------------------------
+
 
         public SheetEntry? GetEntryByName(string name)
         {
             return mGoogleLoader.GetEntryByName(name);
         }
 
-        public void LoadFromGoogle()
+        public void LoadFromGoogle(Action callback = null)
         {
             // Load form from Google Drive
             mGoogleLoader.Load((entries) =>
@@ -72,6 +97,8 @@ namespace core
                     LeaderboardItem leaderboardItem = mLeaderboardPoolController.Spawn();
                     leaderboardItem.UpdateInfo(entry.name, entry.password, entry.coins, entry.score);
                 }
+
+                callback?.Invoke();
             });
         }
     }
