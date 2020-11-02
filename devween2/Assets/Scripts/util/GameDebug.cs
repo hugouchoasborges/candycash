@@ -89,6 +89,8 @@ namespace util
     {
         None,
         Transition,
-        Web
+        Web,
+        Round,
+        Click,
     }
 }

@@ -2,7 +2,6 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
-using monster;
 using leaderboard;
 using UnityEngine;
 using util.google;
@@ -13,6 +12,7 @@ using System.Linq;
 using util;
 using DG.Tweening;
 using UnityEngine.UI;
+using monster;
 
 namespace core
 {
@@ -34,7 +34,7 @@ namespace core
 
         [Header("Game Controllers")]
         [Space]
-        [SerializeField] private MonsterPoolController mMonsterPoolController;
+        [SerializeField] private MonsterManager mMonsterManager;
         [SerializeField] private LeaderboardPoolController mLeaderboardPoolController;
 
         /// <summary>
@@ -44,7 +44,10 @@ namespace core
         {
             LoadFromGoogle(() =>
             {
-                SetDefaultListeners();
+                mDoorClickable.onPointerDown.AddListener(Play);
+                SetTouchActive(true);
+
+                mMonsterManager.Init();
             });
         }
 
@@ -53,18 +56,15 @@ namespace core
         // ========================== Game Flow ============================
         // ----------------------------------------------------------------------------------
 
-        private void RemoveAllListeners()
+        private void SetTouchActive(bool active)
         {
-            mDoorClickable.onPointerDown.RemoveAllListeners();
-            mInfoFrameClickable.onPointerDown.RemoveAllListeners();
-            mRankingClickable.onPointerDown.RemoveAllListeners();
-        }
+            //mDoorClickable.onPointerDown.RemoveAllListeners();
+            //mInfoFrameClickable.onPointerDown.RemoveAllListeners();
+            //mRankingClickable.onPointerDown.RemoveAllListeners();
 
-        private void SetDefaultListeners()
-        {
-            RemoveAllListeners();
-            mDoorClickable.onPointerDown.AddListener(Play);
-            //mInfoFrameClickable.onPointerDown.AddListener(ShowPlayerInfo);
+            mDoorClickable.touchable = active;
+            mInfoFrameClickable.touchable = active;
+            mRankingClickable.touchable = active;
         }
 
         private void Play()
@@ -72,7 +72,7 @@ namespace core
             GameDebug.Log("Starting Game...", util.LogType.Transition);
 
             // Remove click Listeners
-            RemoveAllListeners();
+            SetTouchActive(false);
 
             // Remove LeaderBoards + GameInfoPanel
             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x - 400, 0.2f);
@@ -83,18 +83,28 @@ namespace core
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() =>
             {
-                // TODO: Show Message (delay)
-                mRoundMessageSpr
-                .DOFade(1f, 1f)
+                StartRound();
+            });
+        }
+
+        private void StartRound()
+        {
+            mMonsterManager.PrepareRound();
+
+            Monster selectedMonster = mMonsterManager.GetSelectedMonster();
+            mRoundMessage.text = $"Selecione {selectedMonster.name}";
+
+            mRoundMessageSpr
+            .DOFade(1f, 1f)
+            .OnComplete(() =>
+            {
+                // TODO: OpenDoor Animation (then delay)
+                mDoorClickable.GetComponent<Image>()
+                .DOFade(0, 0.5f)
                 .OnComplete(() =>
                 {
-                    // TODO: OpenDoor Animation (delay)
-                    mDoorClickable.GetComponent<Image>()
-                    .DOFade(0, 0.5f)
-                    .OnComplete(() =>
-                    {
-                        GameDebug.Log("Starting Round...", util.LogType.Transition);
-                    });
+                    GameDebug.Log("Starting Round...", util.LogType.Transition);
+                    mMonsterManager.StartRound();
                 });
             });
         }
