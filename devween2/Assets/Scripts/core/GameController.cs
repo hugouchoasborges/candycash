@@ -11,6 +11,8 @@ using google;
 using System.Collections.Generic;
 using System.Linq;
 using util;
+using DG.Tweening;
+using UnityEngine.UI;
 
 namespace core
 {
@@ -22,6 +24,13 @@ namespace core
         [Header("Menu Items")]
         [Space]
         [SerializeField] private ClickableComponent mDoorClickable;
+        [SerializeField] private ClickableComponent mInfoFrameClickable;
+        [SerializeField] private ClickableComponent mRankingClickable;
+
+        [Header("Game Round")]
+        [Space]
+        [SerializeField] private CanvasGroup mRoundMessageSpr;
+        [SerializeField] private Text mRoundMessage;
 
         [Header("Game Controllers")]
         [Space]
@@ -35,19 +44,59 @@ namespace core
         {
             LoadFromGoogle(() =>
             {
-                mDoorClickable.onPointerDown.AddListener(Play);
+                SetDefaultListeners();
             });
+        }
+
+
+        // ----------------------------------------------------------------------------------
+        // ========================== Game Flow ============================
+        // ----------------------------------------------------------------------------------
+
+        private void RemoveAllListeners()
+        {
+            mDoorClickable.onPointerDown.RemoveAllListeners();
+            mInfoFrameClickable.onPointerDown.RemoveAllListeners();
+            mRankingClickable.onPointerDown.RemoveAllListeners();
+        }
+
+        private void SetDefaultListeners()
+        {
+            RemoveAllListeners();
+            mDoorClickable.onPointerDown.AddListener(Play);
+            //mInfoFrameClickable.onPointerDown.AddListener(ShowPlayerInfo);
         }
 
         private void Play()
         {
             GameDebug.Log("Starting Game...", util.LogType.Transition);
 
-            // TODO: Remove all click Listeners
-            mDoorClickable.onPointerDown.RemoveAllListeners();
+            // Remove click Listeners
+            RemoveAllListeners();
 
-            // TODO: Remove LeaderBoards + GameInfo
-            // TODO: Zoom in the Door
+            // Remove LeaderBoards + GameInfoPanel
+            mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x - 400, 0.2f);
+            mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x + 400, 0.2f);
+
+            // Zoom in the Door
+            mDoorClickable.transform.DOScale(2f, 1f)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+            {
+                // TODO: Show Message (delay)
+                mRoundMessageSpr
+                .DOFade(1f, 1f)
+                .OnComplete(() =>
+                {
+                    // TODO: OpenDoor Animation (delay)
+                    mDoorClickable.GetComponent<Image>()
+                    .DOFade(0, 0.5f)
+                    .OnComplete(() =>
+                    {
+                        GameDebug.Log("Starting Round...", util.LogType.Transition);
+                    });
+                });
+            });
         }
 
 
