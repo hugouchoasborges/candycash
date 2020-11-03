@@ -47,6 +47,8 @@ namespace core
                 mDoorClickable.onPointerDown.AddListener(Play);
                 SetTouchActive(true);
 
+                mMonsterManager.onGameOver = GameOver;
+                mMonsterManager.onNextRound = NextRound;
                 mMonsterManager.Init();
             });
         }
@@ -103,6 +105,50 @@ namespace core
                     mMonsterManager.StartRound();
                 });
             });
+        }
+
+        private void NextRound()
+        {
+            GameDebug.Log("Next Round...", util.LogType.Transition);
+
+            // Closing the Door
+            // TODO: Closing the door animation
+            mDoorClickable.GetComponent<Image>()
+                .DOFade(1, 0.5f)
+                .OnComplete(() =>
+                {
+                    GameDebug.Log("Starting Next Round...", util.LogType.Transition);
+                    StartRound();
+                });
+        }
+
+        private void GameOver()
+        {
+            GameDebug.Log("GameOver...", util.LogType.Transition);
+
+            // Closing the door
+            // TODO: Closing the door animation
+            mDoorClickable.GetComponent<Image>()
+                .DOFade(1, 0.5f)
+                .OnComplete(() =>
+                {
+                    // Hide the monsters
+                    mMonsterManager.SetMonstersAlpha(0);
+
+                    // Hide the message
+                    mRoundMessageSpr.alpha = 0;
+
+                    // Zoom out the Door
+                    mDoorClickable.transform.DOScale(1f, 1f)
+                        .SetEase(Ease.OutQuad)
+                        .OnComplete(() =>
+                        {
+                            // Add LeaderBoards + GameInfoPanel
+                            mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
+                            mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
+                            SetTouchActive(true);
+                        });
+                });
         }
 
 

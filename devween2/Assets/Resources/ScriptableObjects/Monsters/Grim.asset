@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Grim
   m_EditorClassIdentifier: 
   name: a Caveira
-  sprite: {fileID: 0}
+  sprite: {fileID: -1493715541351706515, guid: af22667ee7ac5f0438bab032670374f7, type: 3}

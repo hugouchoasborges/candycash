@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Mummy
   m_EditorClassIdentifier: 
   name: "a M\xFAmia"
-  sprite: {fileID: 0}
+  sprite: {fileID: -5993476995475089337, guid: c3c9ca98835f5a74f93be4becc4c488e, type: 3}

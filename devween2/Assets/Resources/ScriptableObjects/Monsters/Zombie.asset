@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Zombie
   m_EditorClassIdentifier: 
   name: o Zumbi
-  sprite: {fileID: 0}
+  sprite: {fileID: 8455605142535173018, guid: 569244ca940e76e49af9884ae11a179a, type: 3}

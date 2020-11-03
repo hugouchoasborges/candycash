@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Ghost
   m_EditorClassIdentifier: 
   name: o Fantasma
-  sprite: {fileID: 0}
+  sprite: {fileID: -9189720284782478856, guid: 4b82247ba46066046991747bb6c8ce7d, type: 3}

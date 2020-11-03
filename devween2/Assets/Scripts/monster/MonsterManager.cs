@@ -2,6 +2,7 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace monster
         public Monster[] activeMonsters;
 
         //[Header("Round Info")]
+        public Action onNextRound = null;
+        public Action onGameOver = null;
 
         private void Awake()
         {
@@ -79,7 +82,12 @@ namespace monster
                 activeMonster.SetMonster(monstersChoose[random.Next(monstersChoose.Count)]);
             }
 
-            _monstersHolderCG.alpha = 1;
+            SetMonstersAlpha(1);
+        }
+
+        public void SetMonstersAlpha(float alpha)
+        {
+            _monstersHolderCG.alpha = alpha;
         }
 
         public void StartRound()
@@ -100,12 +108,12 @@ namespace monster
             if (selectedMonster.correct)
             {
                 GameDebug.Log("CORRECT MONSTER!!!", util.LogType.Round);
-                // TODO: GoToNextRound
+                onNextRound?.Invoke();
             }
             else
             {
                 GameDebug.Log("INCORRECT MONSTER!!!", util.LogType.Round);
-                // TODO: GameOver
+                onGameOver?.Invoke();
             }
         }
 
