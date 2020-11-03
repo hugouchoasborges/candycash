@@ -13,6 +13,7 @@ using util;
 using DG.Tweening;
 using UnityEngine.UI;
 using monster;
+using System.Collections;
 
 namespace core
 {
@@ -20,6 +21,7 @@ namespace core
     {
         [Header("Network")]
         [SerializeField] private Loader mGoogleLoader;
+        [SerializeField] private float mFetchServerEverySeconds;
 
         [Header("Menu Items")]
         [Space]
@@ -238,7 +240,20 @@ namespace core
                 }
 
                 callback?.Invoke();
+
+                // Remove all delay calls
+                StopAllCoroutines();
+
+                // Adds a Server fetch delayed call
+                StartCoroutine(DelayCall(() => LoadFromGoogle(null), mFetchServerEverySeconds));
             });
+        }
+
+        private IEnumerator DelayCall(Action call, float delay)
+        {
+            GameDebug.Log($"DelayCall ==> {call.Method.Name}", util.LogType.Thread);
+            yield return new WaitForSeconds(delay);
+            call.Invoke();
         }
     }
 }

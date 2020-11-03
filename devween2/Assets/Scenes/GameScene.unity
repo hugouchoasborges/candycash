@@ -1814,6 +1814,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mGoogleLoader: {fileID: 1428756560}
+  mFetchServerEverySeconds: 10
   mDoorClickable: {fileID: 313534979}
   mInfoFrameClickable: {fileID: 1121925928}
   mRankingClickable: {fileID: 2018311853}
@@ -1822,6 +1823,8 @@ MonoBehaviour:
   mRoundValuesPanel: {fileID: 2051400255}
   mRoundScoreText: {fileID: 845842784}
   mRoundCandyText: {fileID: 105754493}
+  mBaseScorePrize: 5
+  mBaseCandyPrize: 5
   mMonsterManager: {fileID: 521227575}
   mLeaderboardPoolController: {fileID: 92394806}
 --- !u!1 &579029026
@@ -4825,7 +4828,7 @@ MonoBehaviour:
   systemLogEnabled: 1
   _logHistoryPanel: {fileID: 1813701574}
   _logHistory: {fileID: 410357875}
-  logTypesEnabled: 0000000001000000020000000300000004000000
+  logTypesEnabled: 000000000100000002000000030000000400000005000000
 --- !u!4 &1782752104
 Transform:
   m_ObjectHideFlags: 0

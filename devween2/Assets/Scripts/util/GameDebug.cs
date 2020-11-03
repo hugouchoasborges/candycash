@@ -92,5 +92,6 @@ namespace util
         Web,
         Round,
         Click,
+        Thread,
     }
 }
