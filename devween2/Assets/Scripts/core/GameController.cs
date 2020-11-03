@@ -32,6 +32,18 @@ namespace core
         [SerializeField] private CanvasGroup mRoundMessageSpr;
         [SerializeField] private Text mRoundMessage;
 
+        [SerializeField] private GameObject mRoundValuesPanel;
+        [SerializeField] private Text mRoundScoreText;
+        [SerializeField] private Text mRoundCandyText;
+        private int _roundScore;
+        private int _roundCandy;
+
+        [Header("Game Round Values")]
+        [Space]
+        [SerializeField] [Range(1, 50)] private int mBaseScorePrize = 5;
+        [SerializeField] [Range(1, 50)] private int mBaseCandyPrize = 5;
+        private int _currentMultiplier = 1;
+
         [Header("Game Controllers")]
         [Space]
         [SerializeField] private MonsterManager mMonsterManager;
@@ -72,9 +84,15 @@ namespace core
             // Remove click Listeners
             SetTouchActive(false);
 
+            _roundScore = 0;
+            _roundCandy = 0;
+
             // Remove LeaderBoards + GameInfoPanel
             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x - 400, 0.2f);
             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x + 400, 0.2f);
+
+            // Show round values on screen
+            mRoundValuesPanel.transform.DOLocalMoveY(0, 1);
 
             // Zoom in the Door
             mDoorClickable.transform.DOScale(2f, 1f)
@@ -83,6 +101,50 @@ namespace core
             {
                 StartRound();
             });
+        }
+
+        private void GameOver()
+        {
+            GameDebug.Log("GameOver...", util.LogType.Transition);
+
+            // Closing the door
+            // TODO: Closing the door animation
+            mDoorClickable.GetComponent<Image>()
+                .DOFade(1, 0.5f)
+                .OnComplete(() =>
+                {
+                    // Hide the monsters
+                    mMonsterManager.SetMonstersAlpha(0);
+
+                    // Hide the message
+                    mRoundMessageSpr.alpha = 0;
+
+                    // Zoom out the Door
+                    mDoorClickable.transform.DOScale(1f, 1f)
+                        .SetEase(Ease.OutQuad)
+                        .OnComplete(() =>
+                        {
+                            // Remove RoundValuesPanel from screen
+                            mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
+
+                            // Add LeaderBoards + GameInfoPanel
+                            mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
+                            mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
+                            SetTouchActive(true);
+                        });
+                });
+        }
+
+
+
+        // ----------------------------------------------------------------------------------
+        // ========================== Round Specifics ============================
+        // ----------------------------------------------------------------------------------
+
+        private void UpdateRoundValues()
+        {
+            mRoundScoreText.text = _roundScore.ToString();
+            mRoundCandyText.text = _roundCandy.ToString();
         }
 
         private void StartRound()
@@ -111,6 +173,12 @@ namespace core
         {
             GameDebug.Log("Next Round...", util.LogType.Transition);
 
+            // Increment score/candy then update screen values
+            _roundCandy += mBaseCandyPrize;
+            _roundScore += mBaseScorePrize * _currentMultiplier;
+
+            UpdateRoundValues();
+
             // Closing the Door
             // TODO: Closing the door animation
             mDoorClickable.GetComponent<Image>()
@@ -121,36 +189,6 @@ namespace core
                     StartRound();
                 });
         }
-
-        private void GameOver()
-        {
-            GameDebug.Log("GameOver...", util.LogType.Transition);
-
-            // Closing the door
-            // TODO: Closing the door animation
-            mDoorClickable.GetComponent<Image>()
-                .DOFade(1, 0.5f)
-                .OnComplete(() =>
-                {
-                    // Hide the monsters
-                    mMonsterManager.SetMonstersAlpha(0);
-
-                    // Hide the message
-                    mRoundMessageSpr.alpha = 0;
-
-                    // Zoom out the Door
-                    mDoorClickable.transform.DOScale(1f, 1f)
-                        .SetEase(Ease.OutQuad)
-                        .OnComplete(() =>
-                        {
-                            // Add LeaderBoards + GameInfoPanel
-                            mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
-                            mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
-                            SetTouchActive(true);
-                        });
-                });
-        }
-
 
         // ----------------------------------------------------------------------------------
         // ========================== Server Communication ============================
