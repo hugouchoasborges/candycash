@@ -5597,6 +5597,10 @@ MonoBehaviour:
   kGFormBaseURL: https://docs.google.com/forms/d/e/1FAIpQLSfRTCs6_jGFeu7Uiq4Oj318bybaygR-CwzEH19plbaH1dW2Fg/
   kPrimaryKey: entry.1916679377
   kPasswordKey: entry.1848534055
+  kNameEntry: entry.1916679377
+  kPasswordEntry: entry.1848534055
+  kScoreEntry: entry.1687696293
+  kCoinsEntry: entry.1829176053
   _testMode: 0
   _testPanel: {fileID: 1870369051}
   _sendButton: {fileID: 1159012221}

@@ -133,10 +133,33 @@ namespace core
                             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
                             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
                             SetTouchActive(true);
+
+                            SendValuesToServer();
                         });
                 });
         }
 
+        private void UpdatePlayerInfo()
+        {
+
+        }
+
+        private void SendValuesToServer()
+        {
+            // TODO: Use data from logged user
+            // TODO: Only send values if it is a new HighScore
+            List<FormEntry> formEntries = new List<FormEntry>()
+            {
+                new FormEntry(SendForm.Instance.kNameEntry, "TestUser"),     // Name
+                new FormEntry(SendForm.Instance.kPasswordEntry, "TestUser"), // Password
+                
+                new FormEntry(SendForm.Instance.kScoreEntry, _roundScore.ToString()),    // Score
+                new FormEntry(SendForm.Instance.kCoinsEntry, _roundScore.ToString()),    // Coins
+        };
+
+            // Send the new Score then load all data from GoogleDocs again
+            SendForm.Instance.Send(() => LoadFromGoogle(), formEntries.ToArray());
+        }
 
 
         // ----------------------------------------------------------------------------------
@@ -216,6 +239,9 @@ namespace core
                     if (singleEntriesList.Where(e => e.name == entry.name).ToArray().Length == 0)
                         singleEntriesList.Add(entry);
                 }
+                // Remove also zero score\candy entries
+                singleEntriesList = singleEntriesList.Where(e => e.coins > 0 && e.score > 0).ToList();
+
                 SheetEntry[] singleEntries = singleEntriesList.ToArray();
 
                 // Sort
@@ -255,5 +281,15 @@ namespace core
             yield return new WaitForSeconds(delay);
             call.Invoke();
         }
+    }
+
+    [Serializable]
+    public class Player
+    {
+        public string name;
+        public string password;
+
+        public int score;
+        public int coins;
     }
 }

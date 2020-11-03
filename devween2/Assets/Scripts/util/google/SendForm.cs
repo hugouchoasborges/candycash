@@ -24,6 +24,13 @@ namespace util.google
         [SerializeField] private string kPrimaryKey = "";
         [SerializeField] private string kPasswordKey = "";
 
+        [Header("GForm Keys")]
+        [Space]
+        public string kNameEntry = "";
+        public string kPasswordEntry = "";
+        public string kScoreEntry = "";
+        public string kCoinsEntry = "";
+
         [Header("Test components")]
         [SerializeField] private bool _testMode;
         [SerializeField] private GameObject _testPanel;
@@ -165,6 +172,12 @@ namespace util.google
     {
         public string formEntryId;
         [HideInInspector] public string entryStr;
+
+        public FormEntry(string formEntryId, string entryStr)
+        {
+            this.formEntryId = formEntryId;
+            this.entryStr = entryStr;
+        }
     }
 
     [System.Serializable]
