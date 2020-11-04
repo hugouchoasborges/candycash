@@ -52,17 +52,10 @@ namespace core
         [SerializeField] private MonsterManager mMonsterManager;
         [SerializeField] private LeaderboardPoolController mLeaderboardPoolController;
 
-        [Header("Login Menus")]
+        [Header("Login-out Menus")]
         [Space]
-        [SerializeField] private GameObject mLoginPanel;
-        [SerializeField] private InputField mNameInput;
-        [SerializeField] private InputField mPasswordInput;
-
-        [SerializeField] private Button mLoginButton;
-        [SerializeField] private Text mLoginFeedback;
-
-        [SerializeField] private GameObject mLogoutPanel;
-        [SerializeField] private Button mLogoutButton;
+        [SerializeField] private LoginUIComponent loginUI;
+        [SerializeField] private LogoutUIComponent logoutUI;
 
         [Header("User Info")]
         [Space]
@@ -83,8 +76,8 @@ namespace core
                 mMonsterManager.onNextRound = NextRound;
                 mMonsterManager.Init();
 
-                mLoginPanel.SetActive(true);
-                mLoginButton.onClick.AddListener(Login);
+                loginUI.SetActive(true);
+                loginUI.mLoginButton.onClick.AddListener(Login);
             });
         }
 
@@ -96,19 +89,19 @@ namespace core
         private void Login()
         {
             // Remove login button listener
-            mLoginButton.onClick.RemoveAllListeners();
+            loginUI.mLoginButton.onClick.RemoveAllListeners();
 
             List<FormEntry> formEntries = new List<FormEntry>()
             {
-                new FormEntry(SendForm.Instance.kNameEntry, mNameInput.text),     // Name
-                new FormEntry(SendForm.Instance.kPasswordEntry, mPasswordInput.text), // Password
+                new FormEntry(SendForm.Instance.kNameEntry, loginUI.mNameInput.text),     // Name
+                new FormEntry(SendForm.Instance.kPasswordEntry, loginUI.mPasswordInput.text), // Password
             };
 
             if (SendForm.Instance.CheckValidEntry(formEntries.ToArray()))
             {
-                mLoggedUser = new Player(mNameInput.text, mPasswordInput.text, 0, 0);
+                mLoggedUser = new Player(loginUI.mNameInput.text, loginUI.mPasswordInput.text, 0, 0);
 
-                var currentUserEntry = GetEntryByName(mNameInput.text);
+                var currentUserEntry = GetEntryByName(loginUI.mNameInput.text);
                 if (currentUserEntry.HasValue)
                 {
                     mLoggedUser.coins = currentUserEntry.Value.coins;
@@ -117,39 +110,39 @@ namespace core
 
                 UpdateUIPlayerInfo();
 
-                mLoginFeedback.text = "<color=\"green\">SUCESSO</color>";
+                loginUI.mLoginFeedback.text = "<color=\"green\">SUCESSO</color>";
 
                 // DELAY then hide login
                 StartCoroutine(DelayCall(() => HideLoginPanel(), 2));
             }
             else
             {
-                mLoginFeedback.text = "<color=\"red\">ERRO</color>";
+                loginUI.mLoginFeedback.text = "<color=\"red\">ERRO</color>";
 
                 // Add Login Listener back
-                mLoginButton.onClick.AddListener(Login);
+                loginUI.mLoginButton.onClick.AddListener(Login);
             }
         }
 
         private void Logout()
         {
-            mLogoutButton.onClick.RemoveAllListeners();
-            mLoginPanel.SetActive(true);
-            mLogoutPanel.SetActive(false);
+            logoutUI.mLogoutButton.onClick.RemoveAllListeners();
+            loginUI.SetActive(true);
+            logoutUI.SetActive(false);
             mLoggedUserUI.SetActive(false);
 
             mLoggedUser = null;
 
-            mLoginButton.onClick.AddListener(Login);
+            loginUI.mLoginButton.onClick.AddListener(Login);
         }
 
         private void HideLoginPanel()
         {
             GameDebug.Log("Hiding Login Panel", util.LogType.Transition);
-            mLoginFeedback.text = "";
-            mLoginPanel.SetActive(false);
-            mLogoutPanel.SetActive(true);
-            mLogoutButton.onClick.AddListener(Logout);
+            loginUI.mLoginFeedback.text = "";
+            loginUI.SetActive(false);
+            logoutUI.SetActive(true);
+            logoutUI.mLogoutButton.onClick.AddListener(Logout);
 
             // PlayerInfoUI
             mLoggedUserUI.SetActive(true);

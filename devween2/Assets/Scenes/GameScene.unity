@@ -1983,13 +1983,9 @@ MonoBehaviour:
   mBaseCandyPrize: 5
   mMonsterManager: {fileID: 521227575}
   mLeaderboardPoolController: {fileID: 92394806}
-  mLoginPanel: {fileID: 577320863}
-  mNameInput: {fileID: 1891830544}
-  mPasswordInput: {fileID: 898560541}
-  mLoginButton: {fileID: 2047914037}
-  mLoginFeedback: {fileID: 1384721415}
-  mLogoutPanel: {fileID: 756597518}
-  mLogoutButton: {fileID: 910533647}
+  loginUI: {fileID: 577320868}
+  logoutUI: {fileID: 756597523}
+  mLoggedUserUI: {fileID: 1103472834}
   mLoggedUser:
     name: 
     password: 
@@ -2005,7 +2001,9 @@ GameObject:
   m_Component:
   - component: {fileID: 577320864}
   - component: {fileID: 577320866}
+  - component: {fileID: 577320868}
   - component: {fileID: 577320865}
+  - component: {fileID: 577320867}
   m_Layer: 5
   m_Name: LogInPanel
   m_TagString: Untagged
@@ -2073,6 +2071,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577320863}
   m_CullTransparentMesh: 0
+--- !u!225 &577320867
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577320863}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &577320868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577320863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a999a39a9733b3499befe8f8517702f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNameInput: {fileID: 1891830544}
+  mPasswordInput: {fileID: 898560541}
+  mLoginButton: {fileID: 2047914037}
+  mLoginFeedback: {fileID: 1384721415}
 --- !u!1 &579029026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,7 +2843,9 @@ GameObject:
   m_Component:
   - component: {fileID: 756597519}
   - component: {fileID: 756597521}
+  - component: {fileID: 756597523}
   - component: {fileID: 756597520}
+  - component: {fileID: 756597522}
   m_Layer: 5
   m_Name: LogOutPanel
   m_TagString: Untagged
@@ -2882,6 +2910,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756597518}
   m_CullTransparentMesh: 0
+--- !u!225 &756597522
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756597518}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &756597523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756597518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8f6c90abcd9804d8a5f514dc9214a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mLogoutButton: {fileID: 910533647}
 --- !u!1 &778834144
 GameObject:
   m_ObjectHideFlags: 0
@@ -3592,7 +3645,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1103472830
 RectTransform:
   m_ObjectHideFlags: 0
