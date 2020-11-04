@@ -32,12 +32,7 @@ namespace core
 
         [Header("Game Round")]
         [Space]
-        [SerializeField] private CanvasGroup mRoundMessageSpr;
-        [SerializeField] private Text mRoundMessage;
-
-        [SerializeField] private GameObject mRoundValuesPanel;
-        [SerializeField] private Text mRoundScoreText;
-        [SerializeField] private Text mRoundCandyText;
+        [SerializeField] private RoundUIComponent roundUI;
         private int _roundScore;
         private int _roundCandy;
 
@@ -177,7 +172,7 @@ namespace core
             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x + 400, 0.2f);
 
             // Show round values on screen
-            mRoundValuesPanel.transform.DOLocalMoveY(0, 1);
+            roundUI.mRoundValuesPanel.transform.DOLocalMoveY(0, 1);
 
             // Zoom in the Door
             mDoorClickable.transform.DOScale(2f, 1f)
@@ -202,7 +197,7 @@ namespace core
                     mMonsterManager.SetMonstersAlpha(0);
 
                     // Hide the message
-                    mRoundMessageSpr.alpha = 0;
+                    roundUI.mRoundMessageSpr.alpha = 0;
 
                     // Zoom out the Door
                     mDoorClickable.transform.DOScale(1f, 1f)
@@ -210,7 +205,7 @@ namespace core
                         .OnComplete(() =>
                         {
                             // Remove RoundValuesPanel from screen
-                            mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
+                            roundUI.mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
 
                             // Add LeaderBoards + GameInfoPanel
                             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
@@ -267,8 +262,8 @@ namespace core
 
         private void UpdateRoundValues()
         {
-            mRoundScoreText.text = _roundScore.ToString();
-            mRoundCandyText.text = _roundCandy.ToString();
+            roundUI.mRoundScoreText.text = _roundScore.ToString();
+            roundUI.mRoundCandyText.text = _roundCandy.ToString();
         }
 
         private void StartRound()
@@ -276,9 +271,9 @@ namespace core
             mMonsterManager.PrepareRound();
 
             Monster selectedMonster = mMonsterManager.GetSelectedMonster();
-            mRoundMessage.text = $"Selecione {selectedMonster.name}";
+            roundUI.mRoundMessage.text = $"Selecione {selectedMonster.name}";
 
-            mRoundMessageSpr
+            roundUI.mRoundMessageSpr
             .DOFade(1f, 1f)
             .OnComplete(() =>
             {

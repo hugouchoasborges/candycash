@@ -38,6 +38,19 @@ namespace core.ui
                 .DOLocalMove(to, duration)
                 .OnComplete(() => callback?.Invoke());
         }
+        public virtual void MoveX(float  to, float duration = 1, Action callback = null)
+        {
+            transform
+                .DOLocalMoveX(to, duration)
+                .OnComplete(() => callback?.Invoke());
+        }
+
+        public virtual void MoveY(float to, float duration = 1, Action callback = null)
+        {
+            transform
+                .DOLocalMoveY(to, duration)
+                .OnComplete(() => callback?.Invoke());
+        }
 
         public virtual void ResetPosition(float duration = 1, Action callback = null)
         {
