@@ -60,6 +60,9 @@ namespace core
         [SerializeField] private Button mLoginButton;
         [SerializeField] private Text mLoginFeedback;
 
+        [SerializeField] private GameObject mLogoutPanel;
+        [SerializeField] private Button mLogoutButton;
+
         [Header("User Info")]
         [Space]
         [SerializeField] private Player mLoggedUser;
@@ -89,6 +92,9 @@ namespace core
 
         private void Login()
         {
+            // Remove login button listener
+            mLoginButton.onClick.RemoveAllListeners();
+
             List<FormEntry> formEntries = new List<FormEntry>()
             {
                 new FormEntry(SendForm.Instance.kNameEntry, mNameInput.text),     // Name
@@ -108,22 +114,36 @@ namespace core
 
                 mLoginFeedback.text = "<color=\"green\">SUCESSO</color>";
 
-                // Remove login button listener
-                mLoginButton.onClick.RemoveAllListeners();
-
                 // DELAY then hide login
                 StartCoroutine(DelayCall(() => HideLoginPanel(), 2));
             }
             else
             {
                 mLoginFeedback.text = "<color=\"red\">ERRO</color>";
+
+                // Add Login Listener back
+                mLoginButton.onClick.AddListener(Login);
             }
+        }
+
+        private void Logout()
+        {
+            mLogoutButton.onClick.RemoveAllListeners();
+            mLoginPanel.SetActive(true);
+            mLogoutPanel.SetActive(false);
+
+            mLoggedUser = null;
+
+            mLoginButton.onClick.AddListener(Login);
         }
 
         private void HideLoginPanel()
         {
             GameDebug.Log("Hiding Login Panel", util.LogType.Transition);
+            mLoginFeedback.text = "";
             mLoginPanel.SetActive(false);
+            mLogoutPanel.SetActive(true);
+            mLogoutButton.onClick.AddListener(Logout);
         }
 
 
