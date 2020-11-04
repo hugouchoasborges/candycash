@@ -168,6 +168,8 @@ namespace core
             _roundScore = 0;
             _roundCandy = 0;
 
+            UpdateRoundValues();
+
             // Remove LeaderBoards + GameInfoPanel
             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x - 400, 0.2f);
             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x + 400, 0.2f);
