@@ -76,7 +76,7 @@ namespace util.google
             GameController.Instance.LoadFromGoogle();
         }
 
-        private bool CheckValidEntry(params FormEntry[] entries)
+        public bool CheckValidEntry(params FormEntry[] entries)
         {
             SheetEntry? currEntry = null;
 

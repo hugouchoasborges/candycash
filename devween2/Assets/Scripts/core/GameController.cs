@@ -51,6 +51,19 @@ namespace core
         [SerializeField] private MonsterManager mMonsterManager;
         [SerializeField] private LeaderboardPoolController mLeaderboardPoolController;
 
+        [Header("Login Menus")]
+        [Space]
+        [SerializeField] private GameObject mLoginPanel;
+        [SerializeField] private InputField mNameInput;
+        [SerializeField] private InputField mPasswordInput;
+
+        [SerializeField] private Button mLoginButton;
+        [SerializeField] private Text mLoginFeedback;
+
+        [Header("User Info")]
+        [Space]
+        [SerializeField] private Player mLoggedUser;
+
         /// <summary>
         /// First call in the ENTIRE game
         /// </summary>
@@ -64,7 +77,53 @@ namespace core
                 mMonsterManager.onGameOver = GameOver;
                 mMonsterManager.onNextRound = NextRound;
                 mMonsterManager.Init();
+
+                mLoginButton.onClick.AddListener(Login);
             });
+        }
+
+
+        // ----------------------------------------------------------------------------------
+        // ========================== Login ============================
+        // ----------------------------------------------------------------------------------
+
+        private void Login()
+        {
+            List<FormEntry> formEntries = new List<FormEntry>()
+            {
+                new FormEntry(SendForm.Instance.kNameEntry, mNameInput.text),     // Name
+                new FormEntry(SendForm.Instance.kPasswordEntry, mPasswordInput.text), // Password
+            };
+
+            if (SendForm.Instance.CheckValidEntry(formEntries.ToArray()))
+            {
+                mLoggedUser = new Player(mNameInput.text, mPasswordInput.text, 0, 0);
+
+                var currentUserEntry = GetEntryByName(mNameInput.text);
+                if (currentUserEntry.HasValue)
+                {
+                    mLoggedUser.coins = currentUserEntry.Value.coins;
+                    mLoggedUser.score = currentUserEntry.Value.score;
+                }
+
+                mLoginFeedback.text = "<color=\"green\">SUCESSO</color>";
+
+                // Remove login button listener
+                mLoginButton.onClick.RemoveAllListeners();
+
+                // DELAY then hide login
+                StartCoroutine(DelayCall(() => HideLoginPanel(), 2));
+            }
+            else
+            {
+                mLoginFeedback.text = "<color=\"red\">ERRO</color>";
+            }
+        }
+
+        private void HideLoginPanel()
+        {
+            GameDebug.Log("Hiding Login Panel", util.LogType.Transition);
+            mLoginPanel.SetActive(false);
         }
 
 
@@ -155,12 +214,11 @@ namespace core
                 
                 new FormEntry(SendForm.Instance.kScoreEntry, _roundScore.ToString()),    // Score
                 new FormEntry(SendForm.Instance.kCoinsEntry, _roundScore.ToString()),    // Coins
-        };
+            };
 
             // Send the new Score then load all data from GoogleDocs again
             SendForm.Instance.Send(() => LoadFromGoogle(), formEntries.ToArray());
         }
-
 
         // ----------------------------------------------------------------------------------
         // ========================== Round Specifics ============================
@@ -291,5 +349,13 @@ namespace core
 
         public int score;
         public int coins;
+
+        public Player(string name, string password, int score, int coins)
+        {
+            this.name = name;
+            this.password = password;
+            this.score = score;
+            this.coins = coins;
+        }
     }
 }
