@@ -14,6 +14,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 using monster;
 using System.Collections;
+using core.ui;
 
 namespace core
 {
@@ -65,6 +66,7 @@ namespace core
 
         [Header("User Info")]
         [Space]
+        [SerializeField] private PlayerInfoUIComponent mLoggedUserUI;
         [SerializeField] private Player mLoggedUser;
 
         /// <summary>
@@ -81,6 +83,7 @@ namespace core
                 mMonsterManager.onNextRound = NextRound;
                 mMonsterManager.Init();
 
+                mLoginPanel.SetActive(true);
                 mLoginButton.onClick.AddListener(Login);
             });
         }
@@ -112,6 +115,8 @@ namespace core
                     mLoggedUser.score = currentUserEntry.Value.score;
                 }
 
+                UpdateUIPlayerInfo();
+
                 mLoginFeedback.text = "<color=\"green\">SUCESSO</color>";
 
                 // DELAY then hide login
@@ -131,6 +136,7 @@ namespace core
             mLogoutButton.onClick.RemoveAllListeners();
             mLoginPanel.SetActive(true);
             mLogoutPanel.SetActive(false);
+            mLoggedUserUI.SetActive(false);
 
             mLoggedUser = null;
 
@@ -144,6 +150,9 @@ namespace core
             mLoginPanel.SetActive(false);
             mLogoutPanel.SetActive(true);
             mLogoutButton.onClick.AddListener(Logout);
+
+            // PlayerInfoUI
+            mLoggedUserUI.SetActive(true);
         }
 
 
@@ -221,10 +230,20 @@ namespace core
                 });
         }
 
+        private void UpdateUIPlayerInfo()
+        {
+            // Update LoggedUser UI info
+            mLoggedUserUI.playerName.text = mLoggedUser.name;
+            mLoggedUserUI.playerCoins.text = mLoggedUser.coins.ToString();
+            mLoggedUserUI.playerScore.text = mLoggedUser.score.ToString();
+        }
+
         private void UpdatePlayerInfo()
         {
             mLoggedUser.coins += _roundCandy;
             mLoggedUser.score += _roundScore;
+
+            UpdateUIPlayerInfo();
         }
 
         private void SendValuesToServer()
