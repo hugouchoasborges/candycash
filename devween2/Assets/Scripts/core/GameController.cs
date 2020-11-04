@@ -213,6 +213,7 @@ namespace core
                             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
                             SetTouchActive(true);
 
+                            UpdatePlayerInfo();
                             SendValuesToServer();
                         });
                 });
@@ -220,20 +221,26 @@ namespace core
 
         private void UpdatePlayerInfo()
         {
-
+            mLoggedUser.coins += _roundCandy;
+            mLoggedUser.score += _roundScore;
         }
 
         private void SendValuesToServer()
         {
-            // TODO: Use data from logged user
-            // TODO: Only send values if it is a new HighScore
+            if (mLoggedUser == null)
+            {
+                GameDebug.LogError("User not logged... Not sending any data to server", util.LogType.Round);
+                LoadFromGoogle();
+                return;
+            }
+
             List<FormEntry> formEntries = new List<FormEntry>()
             {
-                new FormEntry(SendForm.Instance.kNameEntry, "TestUser"),     // Name
-                new FormEntry(SendForm.Instance.kPasswordEntry, "TestUser"), // Password
+                new FormEntry(SendForm.Instance.kNameEntry, mLoggedUser.name),     // Name
+                new FormEntry(SendForm.Instance.kPasswordEntry, mLoggedUser.password), // Password
                 
-                new FormEntry(SendForm.Instance.kScoreEntry, _roundScore.ToString()),    // Score
-                new FormEntry(SendForm.Instance.kCoinsEntry, _roundScore.ToString()),    // Coins
+                new FormEntry(SendForm.Instance.kScoreEntry, mLoggedUser.score.ToString()),    // Score
+                new FormEntry(SendForm.Instance.kCoinsEntry, mLoggedUser.coins.ToString()),    // Coins
             };
 
             // Send the new Score then load all data from GoogleDocs again
