@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
@@ -23,6 +23,7 @@ namespace core
         [Header("Network")]
         [SerializeField] private Loader mGoogleLoader;
         [SerializeField] private float mFetchServerEverySeconds;
+        private Coroutine loadFromGoogle = null;
 
         [Header("Menu Items")]
         [Space]
@@ -56,6 +57,10 @@ namespace core
         [Space]
         [SerializeField] private PlayerInfoUIComponent mLoggedUserUI;
         [SerializeField] private Player mLoggedUser;
+
+        [Header("Leaderboard Challenge")]
+        [Space]
+        [SerializeField] private LeaderboardChallengeUIComponent leaderboardChallengeUI;
 
         /// <summary>
         /// First call in the ENTIRE game
@@ -238,6 +243,57 @@ namespace core
             mLoggedUser.coins += _roundCandy;
             mLoggedUser.score = Math.Max(_roundScore, mLoggedUser.score);
 
+            string target = leaderboardChallengeUI.GetTargetName();
+            if (!string.IsNullOrEmpty(target))
+            {
+                SheetEntry? targetPlayer = GetEntryByName(target);
+                if (!targetPlayer.HasValue)
+                {
+                    GameDebug.LogError($"Could not find target: {target}", util.LogType.Leaderboard);
+                    return;
+                }
+
+                int betCoins = leaderboardChallengeUI.GetBetCoins();
+                int targetCoins;
+
+                if (_roundScore > leaderboardChallengeUI.GetBetScore())
+                {
+                    GameDebug.Log($"----> CHALLENGE WON<-----", util.LogType.Leaderboard);
+
+                    // Update loggedUser coins
+                    mLoggedUser.coins += betCoins;
+
+                    targetCoins = targetPlayer.Value.coins - betCoins;
+                    targetCoins = Math.Max(0, targetCoins);
+                }
+                else
+                {
+                    GameDebug.Log($"----> CHALLENGE LOST<-----", util.LogType.Leaderboard);
+
+                    // Update loggedUser coins
+                    mLoggedUser.coins -= betCoins;
+                    mLoggedUser.coins = Math.Max(0, mLoggedUser.coins);
+
+                    targetCoins = targetPlayer.Value.coins + betCoins;
+                }
+
+                // Update Target Coins
+                List<FormEntry> formEntries = new List<FormEntry>()
+                    {
+                        new FormEntry(SendForm.Instance.kNameEntry, targetPlayer.Value.name),     // Name
+                        new FormEntry(SendForm.Instance.kPasswordEntry, targetPlayer.Value.password), // Password
+                
+                        new FormEntry(SendForm.Instance.kScoreEntry, targetPlayer.Value.score.ToString()),    // Score
+                        new FormEntry(SendForm.Instance.kCoinsEntry, targetCoins.ToString()),    // Coins
+                    };
+
+                // Send the new Score then load all data from GoogleDocs again
+                SendForm.Instance.Send(() => LoadFromGoogle(), formEntries.ToArray());
+
+                // Reset the challenge values
+                leaderboardChallengeUI.SetActive(false);
+            }
+
             UpdateUIPlayerInfo();
         }
 
@@ -369,17 +425,42 @@ namespace core
                     // Instantiate leaderboard items
                     var entry = singleEntries[i];
                     LeaderboardItem leaderboardItem = mLeaderboardPoolController.Spawn();
+                    leaderboardItem.onPointerDown.AddListener(() => LeaderboardItemSelected(leaderboardItem));
                     leaderboardItem.UpdateInfo(entry.name, entry.password, entry.coins, entry.score, singleEntries.Length - i);
                 }
 
                 callback?.Invoke();
 
-                // Remove all delay calls
-                StopAllCoroutines();
+                // Remove LoadFromGoogle delayCall
+                if (loadFromGoogle != null)
+                {
+                    StopCoroutine(loadFromGoogle);
+                    loadFromGoogle = null;
+                }
 
                 // Adds a Server fetch delayed call
-                StartCoroutine(DelayCall(() => LoadFromGoogle(null), mFetchServerEverySeconds));
+                loadFromGoogle = StartCoroutine(DelayCall(() => LoadFromGoogle(null), mFetchServerEverySeconds));
             });
+        }
+
+        private void LeaderboardItemSelected(LeaderboardItem item)
+        {
+            if (mLoggedUser == null || string.IsNullOrEmpty(mLoggedUser.name))
+            {
+                GameDebug.Log($"USER NOT LOGGED --> Could not open Challenge", util.LogType.Leaderboard);
+                return;
+            }
+
+            if (mLoggedUser.name == item.Name)
+            {
+                GameDebug.Log($"You CANNOT bet yourself", util.LogType.Leaderboard);
+                return;
+            }
+
+            GameDebug.Log($"Leaderboard selected: {item.Name}", util.LogType.Leaderboard);
+            leaderboardChallengeUI.SetActive(true);
+            leaderboardChallengeUI.betButton.onClick.AddListener(Play);
+            leaderboardChallengeUI.SetTarget(item.Name, Math.Min(item.Coins, mLoggedUser.coins), item.Score);
         }
 
         private IEnumerator DelayCall(Action call, float delay)

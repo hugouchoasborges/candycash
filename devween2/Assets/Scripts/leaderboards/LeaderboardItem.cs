@@ -2,12 +2,13 @@
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
+using core;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace leaderboard
 {
-    public class LeaderboardItem : MonoBehaviour
+    public class LeaderboardItem : ClickableComponent
     {
         [Header("Components")]
         [SerializeField] private Text _positionText;
@@ -22,6 +23,10 @@ namespace leaderboard
         [SerializeField] private int coins;
         [SerializeField] private int maxScore;
         [SerializeField] private int position;
+
+        public string Name => username;
+        public int Coins => coins;
+        public int Score => maxScore;
 
         public void UpdateInfo(string username, string userpass, int coins, int maxScore, int position)
         {

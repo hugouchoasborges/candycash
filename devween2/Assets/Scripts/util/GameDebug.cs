@@ -93,5 +93,6 @@ namespace util
         Round,
         Click,
         Thread,
+        Leaderboard,
     }
 }

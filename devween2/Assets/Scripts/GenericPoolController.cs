@@ -57,10 +57,7 @@ public class GenericPoolController<T> : MonoBehaviour where T : MonoBehaviour
 
         foreach (var poolObj in destroyedObjs)
         {
-            activeObjects.Remove(poolObj);
-
-            queue.Enqueue(poolObj.gameObject);
-            poolObj.gameObject.SetActive(false);
+            DestroyItem(poolObj);
         }
 
         return destroyedObjs;
