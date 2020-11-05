@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Created by Hugo Uchoas Borges <hugouchoas@outlook.com>
  */
 
@@ -236,7 +236,7 @@ namespace core
         private void UpdatePlayerInfo()
         {
             mLoggedUser.coins += _roundCandy;
-            mLoggedUser.score += _roundScore;
+            mLoggedUser.score = Math.Max(_roundScore, mLoggedUser.score);
 
             UpdateUIPlayerInfo();
         }
