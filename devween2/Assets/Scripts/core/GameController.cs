@@ -187,35 +187,42 @@ namespace core
         {
             GameDebug.Log("GameOver...", util.LogType.Transition);
 
-            // Closing the door
-            // TODO: Closing the door animation
-            mDoorClickable.GetComponent<Image>()
-                .DOFade(1, 0.5f)
-                .OnComplete(() =>
-                {
-                    // Hide the monsters
-                    mMonsterManager.SetMonstersAlpha(0);
+            // Wrong animation
+            roundUI.SetCorrect(false, () =>
+            {
+                // Closing the door
+                // TODO: Closing the door animation
+                mDoorClickable.GetComponent<Image>()
+                    .DOFade(1, 0.5f)
+                    .OnComplete(() =>
+                    {
+                        // Hide the monsters
+                        mMonsterManager.SetMonstersAlpha(0);
 
-                    // Hide the message
-                    roundUI.mRoundMessageSpr.alpha = 0;
+                        // Hide the message
+                        roundUI.mRoundMessageSpr.alpha = 0;
 
-                    // Zoom out the Door
-                    mDoorClickable.transform.DOScale(1f, 1f)
-                        .SetEase(Ease.OutQuad)
-                        .OnComplete(() =>
-                        {
-                            // Remove RoundValuesPanel from screen
-                            roundUI.mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
+                        // Hide the roundFeedback
+                        roundUI.SetFeedbackActive(false);
 
-                            // Add LeaderBoards + GameInfoPanel
-                            mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
-                            mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
-                            SetTouchActive(true);
+                        // Zoom out the Door
+                        mDoorClickable.transform.DOScale(1f, 1f)
+                                .SetEase(Ease.OutQuad)
+                                .OnComplete(() =>
+                                {
+                                    // Remove RoundValuesPanel from screen
+                                    roundUI.mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
 
-                            UpdatePlayerInfo();
-                            SendValuesToServer();
-                        });
-                });
+                                    // Add LeaderBoards + GameInfoPanel
+                                    mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
+                                    mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
+                                    SetTouchActive(true);
+
+                                    UpdatePlayerInfo();
+                                    SendValuesToServer();
+                                });
+                    });
+            });
         }
 
         private void UpdateUIPlayerInfo()
@@ -277,6 +284,7 @@ namespace core
             .DOFade(1f, 1f)
             .OnComplete(() =>
             {
+                roundUI.SetFeedbackActive(true);
                 // TODO: OpenDoor Animation (then delay)
                 mDoorClickable.GetComponent<Image>()
                 .DOFade(0, 0.5f)
@@ -298,15 +306,19 @@ namespace core
 
             UpdateRoundValues();
 
-            // Closing the Door
-            // TODO: Closing the door animation
-            mDoorClickable.GetComponent<Image>()
-                .DOFade(1, 0.5f)
-                .OnComplete(() =>
-                {
-                    GameDebug.Log("Starting Next Round...", util.LogType.Transition);
-                    StartRound();
-                });
+            // Correct animation
+            roundUI.SetCorrect(true, () =>
+            {
+                // Closing the Door
+                // TODO: Closing the door animation
+                mDoorClickable.GetComponent<Image>()
+                    .DOFade(1, 0.5f)
+                    .OnComplete(() =>
+                    {
+                        GameDebug.Log("Starting Next Round...", util.LogType.Transition);
+                        StartRound();
+                    });
+            });
         }
 
         // ----------------------------------------------------------------------------------
