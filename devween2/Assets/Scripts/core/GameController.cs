@@ -352,11 +352,12 @@ namespace core
                         }
                         return score;
                     });
-                foreach (var entry in singleEntries)
+                for (int i = 0; i < singleEntries.Length; i++)
                 {
                     // Instantiate leaderboard items
+                    var entry = singleEntries[i];
                     LeaderboardItem leaderboardItem = mLeaderboardPoolController.Spawn();
-                    leaderboardItem.UpdateInfo(entry.name, entry.password, entry.coins, entry.score);
+                    leaderboardItem.UpdateInfo(entry.name, entry.password, entry.coins, entry.score, singleEntries.Length - i);
                 }
 
                 callback?.Invoke();
