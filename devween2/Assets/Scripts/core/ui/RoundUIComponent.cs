@@ -27,14 +27,14 @@ namespace core.ui
 
         private void Start()
         {
-            correctImage.color = new Color(1, 1, 1, 0.2f);
-            wrongImage.color = new Color(1, 1, 1, 0.2f);
-
             SetFeedbackActive(false);
         }
 
         public void SetFeedbackActive(bool value)
         {
+            correctImage.color = new Color(1, 1, 1, 0.2f);
+            wrongImage.color = new Color(1, 1, 1, 0.2f);
+
             correctImage.gameObject.SetActive(value);
             wrongImage.gameObject.SetActive(value);
         }

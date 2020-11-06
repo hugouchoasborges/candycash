@@ -41,7 +41,13 @@ namespace core
         [Space]
         [SerializeField] [Range(1, 50)] private int mBaseScorePrize = 5;
         [SerializeField] [Range(1, 50)] private int mBaseCandyPrize = 5;
-        private int _currentMultiplier = 1;
+        [SerializeField] private int _currentMultiplier = 1;
+
+        [Space]
+        [SerializeField] [Range(1f, 10f)] private float mStartRoundTime;
+        [SerializeField] [Range(0f, 1f)] private float mRoundTimeDecrease;
+        [SerializeField] [Range(0.1f, 5f)] private float mMinRoundTime;
+        [SerializeField] private float _currentRoundTime;
 
         [Header("Game Controllers")]
         [Space]
@@ -61,6 +67,10 @@ namespace core
         [Header("Leaderboard Challenge")]
         [Space]
         [SerializeField] private LeaderboardChallengeUIComponent leaderboardChallengeUI;
+
+        [Header("Timer Component")]
+        [Space]
+        [SerializeField] private TimerUIComponent timerUI;
 
         /// <summary>
         /// First call in the ENTIRE game
@@ -163,6 +173,7 @@ namespace core
         private void Play()
         {
             GameDebug.Log("Starting Game...", util.LogType.Transition);
+            _currentRoundTime = mStartRoundTime;
 
             // Remove click Listeners
             SetTouchActive(false);
@@ -191,6 +202,8 @@ namespace core
         private void GameOver()
         {
             GameDebug.Log("GameOver...", util.LogType.Transition);
+            mMonsterManager.SetTouchActive(false);
+            timerUI.StopTimer();
 
             // Wrong animation
             roundUI.SetCorrect(false, () =>
@@ -346,6 +359,7 @@ namespace core
                 .DOFade(0, 0.5f)
                 .OnComplete(() =>
                 {
+                    timerUI.StartTimer(_currentRoundTime, GameOver);
                     GameDebug.Log("Starting Round...", util.LogType.Transition);
                     mMonsterManager.StartRound();
                 });
@@ -355,6 +369,8 @@ namespace core
         private void NextRound()
         {
             GameDebug.Log("Next Round...", util.LogType.Transition);
+            timerUI.StopTimer();
+            _currentRoundTime = Math.Max(mMinRoundTime, _currentRoundTime - mRoundTimeDecrease);
 
             // Increment score/candy then update screen values
             _roundCandy += mBaseCandyPrize;
