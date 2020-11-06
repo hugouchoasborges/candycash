@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Vampire
   m_EditorClassIdentifier: 
   name: o Vampiro
-  sprite: {fileID: 485133090585099614, guid: 666b847fa5a04e840bf20a8ac0110f16, type: 3}
+  sprite: {fileID: -5601420649391504742, guid: 244c1489d1653ef4f96f73e352fe1d02, type: 3}

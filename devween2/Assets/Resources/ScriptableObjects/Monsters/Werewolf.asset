@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 180cee250b0a62f4c8943062b7a9a46a, type: 3}
-  m_Name: Ghost
+  m_Name: Werewolf
   m_EditorClassIdentifier: 
-  name: o Fantasma
-  sprite: {fileID: -9189720284782478856, guid: 4b82247ba46066046991747bb6c8ce7d, type: 3}
+  name: o Lobisomem
+  sprite: {fileID: 4041558817907283394, guid: 244c1489d1653ef4f96f73e352fe1d02, type: 3}

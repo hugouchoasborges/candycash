@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 180cee250b0a62f4c8943062b7a9a46a, type: 3}
-  m_Name: Grim
+  m_Name: Witch
   m_EditorClassIdentifier: 
-  name: a Caveira
-  sprite: {fileID: -1493715541351706515, guid: af22667ee7ac5f0438bab032670374f7, type: 3}
+  name: a Bruxa
+  sprite: {fileID: -3240258809837735371, guid: 244c1489d1653ef4f96f73e352fe1d02, type: 3}

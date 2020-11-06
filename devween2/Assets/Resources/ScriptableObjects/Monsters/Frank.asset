@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 180cee250b0a62f4c8943062b7a9a46a, type: 3}
-  m_Name: Zombie
+  m_Name: Frank
   m_EditorClassIdentifier: 
-  name: o Zumbi
-  sprite: {fileID: 8455605142535173018, guid: 569244ca940e76e49af9884ae11a179a, type: 3}
+  name: o Frankenstein
+  sprite: {fileID: 6704814420782112271, guid: 244c1489d1653ef4f96f73e352fe1d02, type: 3}

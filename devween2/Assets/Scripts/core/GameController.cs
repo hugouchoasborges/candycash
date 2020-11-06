@@ -30,6 +30,7 @@ namespace core
         [SerializeField] private ClickableComponent mDoorClickable;
         [SerializeField] private ClickableComponent mInfoFrameClickable;
         [SerializeField] private ClickableComponent mRankingClickable;
+        [SerializeField] private GameObject mLogo;
 
         [Header("Game Round")]
         [Space]
@@ -189,7 +190,8 @@ namespace core
 
             UpdateRoundValues();
 
-            // Remove LeaderBoards + GameInfoPanel
+            // Remove LeaderBoards + GameInfoPanel + Logo
+            mLogo.SetActive(false);
             mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x - 400, 0.2f);
             mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x + 400, 0.2f);
 
@@ -237,7 +239,8 @@ namespace core
                                     // Remove RoundValuesPanel from screen
                                     roundUI.mRoundValuesPanel.transform.DOLocalMoveY(200, 0.5f);
 
-                                    // Add LeaderBoards + GameInfoPanel
+                                    // Add LeaderBoards + GameInfoPanel + Logo
+                                    mLogo.SetActive(true);
                                     mRankingClickable.transform.DOMoveX(mRankingClickable.transform.position.x + 400, 0.2f);
                                     mInfoFrameClickable.transform.DOMoveX(mInfoFrameClickable.transform.position.x - 400, 0.2f);
                                     SetTouchActive(true);
