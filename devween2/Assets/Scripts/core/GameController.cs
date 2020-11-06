@@ -41,7 +41,12 @@ namespace core
         [Space]
         [SerializeField] [Range(1, 50)] private int mBaseScorePrize = 5;
         [SerializeField] [Range(1, 50)] private int mBaseCandyPrize = 5;
+
+        [Header("Multiplier")]
+        [Space]
+        [SerializeField] private int _maxMultiplier = 8;
         [SerializeField] private int _currentMultiplier = 1;
+        [SerializeField] private int _currentMultiplierZoneCount = 0;
 
         [Space]
         [SerializeField] [Range(1f, 10f)] private float mStartRoundTime;
@@ -174,6 +179,7 @@ namespace core
         {
             GameDebug.Log("Starting Game...", util.LogType.Transition);
             _currentRoundTime = mStartRoundTime;
+            _currentMultiplierZoneCount = 0;
 
             // Remove click Listeners
             SetTouchActive(false);
@@ -369,12 +375,32 @@ namespace core
         private void NextRound()
         {
             GameDebug.Log("Next Round...", util.LogType.Transition);
-            timerUI.StopTimer();
             _currentRoundTime = Math.Max(mMinRoundTime, _currentRoundTime - mRoundTimeDecrease);
 
             // Increment score/candy then update screen values
             _roundCandy += mBaseCandyPrize;
             _roundScore += mBaseScorePrize * _currentMultiplier;
+
+            timerUI.StopTimer((bool hasMultiplier) =>
+            {
+                if (!hasMultiplier)
+                {
+                    _currentMultiplierZoneCount = 0;
+                    _currentMultiplier = 1;
+                }
+                else
+                {
+                    _currentMultiplierZoneCount++;
+                    if (_currentMultiplier < _maxMultiplier && _currentMultiplierZoneCount >= _currentMultiplier * 2)
+                    {
+                        _currentMultiplier *= 2;
+                        _currentMultiplierZoneCount = 0;
+                    }
+                }
+            });
+
+            timerUI.multiplierText.text = $"x{_currentMultiplier}";
+            timerUI.multiplierText.fontSize = 30 + 10 * _currentMultiplier;
 
             UpdateRoundValues();
 
