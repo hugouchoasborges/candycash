@@ -19,11 +19,14 @@ namespace monster
         [SerializeField] private string _monstersPath;
         [SerializeField] private GameObject monsterPrefab;
         [SerializeField] private Transform monstersHolder;
+        [SerializeField] private Transform monstersLabelHolder;
         private CanvasGroup _monstersHolderCG;
+        private CanvasGroup _monstersLabelHolderCG;
 
         [Header("Monster Instances")]
         [Space]
         public Monster[] activeMonsters;
+        private Dictionary<string, int> _activeMonstersButtons = new Dictionary<string, int>();
 
         //[Header("Round Info")]
         public Action onNextRound = null;
@@ -32,6 +35,7 @@ namespace monster
         private void Awake()
         {
             _monstersHolderCG = monstersHolder.GetComponent<CanvasGroup>();
+            _monstersLabelHolderCG = monstersLabelHolder.GetComponent<CanvasGroup>();
         }
 
         public void Init()
@@ -46,6 +50,10 @@ namespace monster
                 activeMonsters[idx].transform.SetParent(monstersHolder);
                 activeMonsters[idx].onPointerDown.AddListener(() => SelectMonster(activeMonsters[idx]));
             }
+
+            _activeMonstersButtons.Add("Fire1", 0);
+            _activeMonstersButtons.Add("Fire2", 1);
+            _activeMonstersButtons.Add("Fire3", 2);
         }
 
 
@@ -87,6 +95,7 @@ namespace monster
         public void SetMonstersAlpha(float alpha)
         {
             _monstersHolderCG.alpha = alpha;
+            _monstersLabelHolderCG.alpha = alpha;
         }
 
         public void StartRound()
@@ -94,8 +103,10 @@ namespace monster
             SetTouchActive(true);
         }
 
+        private bool _touchActive = false;
         public void SetTouchActive(bool active)
         {
+            _touchActive = active;
             foreach (var activeMonster in activeMonsters)
                 activeMonster.touchable = active;
         }
@@ -127,6 +138,18 @@ namespace monster
             foreach (var activeMonster in activeMonsters)
                 if (activeMonster.correct) return activeMonster;
             return null;
+        }
+
+        private void Update()
+        {
+            if (_touchActive)
+            {
+                foreach (var key in _activeMonstersButtons.Keys)
+                {
+                    if (Input.GetButtonDown(key))
+                        SelectMonster(activeMonsters[_activeMonstersButtons[key]]);
+                }
+            }
         }
     }
 }
