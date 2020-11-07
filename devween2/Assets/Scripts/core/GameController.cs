@@ -202,6 +202,12 @@ namespace core
             _currentRoundTime = mStartRoundTime;
             _currentMultiplierZoneCount = 0;
 
+            // Reset Multiplier
+            _currentMultiplierZoneCount = 0;
+            _currentMultiplier = 1;
+            timerUI.multiplierText.text = $"x{_currentMultiplier}";
+            timerUI.multiplierText.fontSize = 30 + 10 * _currentMultiplier;
+
             // Remove click Listeners
             SetTouchActive(false);
 
@@ -455,6 +461,7 @@ namespace core
         {
             var audioSource = background ? _audioSource : additionalAudioSource;
             audioSource.clip = _audioClipsDict[audioName];
+            audioSource.loop = background;
             audioSource.Play();
         }
 
