@@ -18,6 +18,7 @@ using core.ui;
 
 namespace core
 {
+    [RequireComponent(typeof(AudioSource))]
     public class GameController : Singleton<GameController>
     {
         [Header("Network")]
@@ -78,11 +79,19 @@ namespace core
         [Space]
         [SerializeField] private TimerUIComponent timerUI;
 
+        [Header("Audio files")]
+        [Space]
+        [SerializeField] private AudioClip[] audioClips;
+        private Dictionary<string, AudioClip> _audioClipsDict;
+        private AudioSource _audioSource;
+        [SerializeField] private AudioSource additionalAudioSource;
+
         /// <summary>
         /// First call in the ENTIRE game
         /// </summary>
         private void Start()
         {
+            PlayAudio("menu_bg", true);
             LoadFromGoogle(() =>
             {
                 mDoorClickable.onPointerDown.AddListener(Play);
@@ -95,6 +104,16 @@ namespace core
                 loginUI.SetActive(true);
                 loginUI.mLoginButton.onClick.AddListener(Login);
             });
+        }
+
+        private void Awake()
+        {
+            _audioSource = GetComponent<AudioSource>();
+            _audioClipsDict = new Dictionary<string, AudioClip>();
+            foreach (var audioClip in audioClips)
+            {
+                _audioClipsDict.Add(audioClip.name, audioClip);
+            }
         }
 
 
@@ -179,6 +198,7 @@ namespace core
         private void Play()
         {
             GameDebug.Log("Starting Game...", util.LogType.Transition);
+            PlayAudio("single_click");
             _currentRoundTime = mStartRoundTime;
             _currentMultiplierZoneCount = 0;
 
@@ -210,6 +230,7 @@ namespace core
         private void GameOver()
         {
             GameDebug.Log("GameOver...", util.LogType.Transition);
+            PlayAudio("choose_wrong");
             mMonsterManager.SetTouchActive(false);
             timerUI.StopTimer();
 
@@ -364,6 +385,7 @@ namespace core
             {
                 roundUI.SetFeedbackActive(true);
                 // TODO: OpenDoor Animation (then delay)
+                PlayAudio("door_open");
                 mDoorClickable.GetComponent<Image>()
                 .DOFade(0, 0.5f)
                 .OnComplete(() =>
@@ -378,6 +400,7 @@ namespace core
         private void NextRound()
         {
             GameDebug.Log("Next Round...", util.LogType.Transition);
+            PlayAudio("choose_correct");
             _currentRoundTime = Math.Max(mMinRoundTime, _currentRoundTime - mRoundTimeDecrease);
 
             // Increment score/candy then update screen values
@@ -412,6 +435,7 @@ namespace core
             {
                 // Closing the Door
                 // TODO: Closing the door animation
+                PlayAudio("door_close");
                 mDoorClickable.GetComponent<Image>()
                     .DOFade(1, 0.5f)
                     .OnComplete(() =>
@@ -421,6 +445,19 @@ namespace core
                     });
             });
         }
+
+
+        // ----------------------------------------------------------------------------------
+        // ========================== Audio Playback ============================
+        // ----------------------------------------------------------------------------------
+
+        public void PlayAudio(string audioName, bool background = false)
+        {
+            var audioSource = background ? _audioSource : additionalAudioSource;
+            audioSource.clip = _audioClipsDict[audioName];
+            audioSource.Play();
+        }
+
 
         // ----------------------------------------------------------------------------------
         // ========================== Server Communication ============================
